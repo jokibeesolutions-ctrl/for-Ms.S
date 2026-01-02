@@ -16,7 +16,7 @@
             margin: 0; padding: 0; height: 100%;
             background-color: var(--bg-color);
             color: var(--white);
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
             display: flex; justify-content: center; align-items: center;
         }
@@ -83,6 +83,7 @@
             color: white; border: 1px solid rgba(255, 255, 255, 0.3);
             padding: 10px 20px; border-radius: 30px; cursor: pointer;
             width: 200px; transition: 0.3s; font-size: 0.85rem;
+            outline: none;
         }
 
         button:hover { background: var(--white); color: black; transform: scale(1.05); }
@@ -95,70 +96,8 @@
             margin: 20px auto;
             background: rgba(255,255,255,0.05);
             border: 2px solid var(--neon-blue);
+            border-radius: 10px;
         }
 
         #player {
             position: absolute; width: 15px; height: 15px;
-            background: var(--neon-blue); border-radius: 50%;
-            transition: 0.1s;
-        }
-
-        .target {
-            position: absolute; width: 15px; height: 15px;
-            background: #ff007f; border-radius: 50%; right: 5px; bottom: 5px;
-            box-shadow: 0 0 10px #ff007f;
-        }
-
-        .fade-in { animation: fadeIn 0.8s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    </style>
-</head>
-<body>
-
-    <div id="stars-container"></div>
-
-    <div class="silhouettes">
-        <img src="https://www.svgrepo.com/show/335165/muslim-man.svg" class="silhouette" alt="man">
-        <img src="https://www.svgrepo.com/show/335168/muslim-woman.svg" class="silhouette" style="animation-delay: 2s;" alt="woman">
-    </div>
-
-    <audio id="bgMusic" loop>
-        <source src="https://raw.githubusercontent.com/Arif-Eka/musik/main/melamarmu_instrumental.mp3" type="audio/mpeg">
-    </audio>
-
-    <div class="card" id="main-card">
-        <div class="card-header">
-            <span>TRANSMISI KHUSUS: ANSEN</span>
-            <span>✕</span>
-        </div>
-        
-        <div id="content" class="fade-in">
-            <h1>Halo... <br>Bener ini dengan <b>Susi</b>?</h1>
-            <div class="btn-container">
-                <button onclick="startApp()">Iya, ini aku</button>
-                <button id="btn-no" onmouseover="moveButton(this)">Bukan Susi</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const audio = document.getElementById('bgMusic');
-        let posX = 0; let posY = 0;
-
-        function startApp() {
-            audio.play().catch(e => console.log("Audio play deferred"));
-            nextStep(2);
-        }
-
-        function nextStep(step) {
-            const content = document.getElementById('content');
-            content.classList.remove('fade-in');
-            void content.offsetWidth;
-            content.classList.add('fade-in');
-
-            if (step === 2) {
-                content.innerHTML = `
-                    <h1>Oke Susi...<br>Berarti bener kamu lahir pada tanggal <b>18 Oktober 2000</b> kan?</h1>
-                    <div class="btn-container">
-                        <button onclick="nextStep(3)">Iya, bener</button>
-                        <button onmouseover="moveButton(this)">Gak, siapa ya?</button>
