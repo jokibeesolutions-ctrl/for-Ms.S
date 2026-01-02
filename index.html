@@ -2,12 +2,12 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Cuma Susi yang boleh liat</title>
     <style>
         :root {
             --bg-color: #0b0d17;
-            --glass-bg: rgba(255, 255, 255, 0.07);
+            --glass-bg: rgba(255, 255, 255, 0.08);
             --neon-blue: #00d2ff;
             --white: #ffffff;
         }
@@ -16,19 +16,23 @@
             margin: 0; padding: 0; height: 100%;
             background-color: var(--bg-color);
             color: var(--white);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             overflow: hidden;
             display: flex; justify-content: center; align-items: center;
+            touch-action: manipulation;
         }
 
+        /* Latar Belakang Bintang */
         #stars-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: -3; background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
+            pointer-events: none;
         }
 
         .star {
             position: absolute; background: white; border-radius: 50%;
             animation: moveStar linear infinite;
+            pointer-events: none;
         }
 
         @keyframes moveStar {
@@ -36,68 +40,210 @@
             to { transform: translateY(100vh); }
         }
 
+        /* Siluet Animasi */
         .silhouettes {
             position: fixed; bottom: 0; width: 100%;
             display: flex; justify-content: space-around; align-items: flex-end;
-            z-index: -1; opacity: 0.15; pointer-events: none;
+            z-index: -1; opacity: 0.15; 
+            pointer-events: none; /* PENTING: Agar tidak menutupi tombol */
         }
 
         .silhouette {
-            height: 48vh; filter: brightness(0) invert(1);
+            height: 45vh; filter: brightness(0) invert(1);
             animation: float 5s ease-in-out infinite;
         }
 
         @keyframes float {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+            50% { transform: translateY(-15px); }
         }
 
+        /* Kartu Utama */
         .card {
             background: var(--glass-bg);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 20px;
             padding: 25px;
             width: 85%;
-            max-width: 400px;
+            max-width: 380px;
             text-align: center;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
-            z-index: 10;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            z-index: 100; /* PENTING: Harus paling atas */
+            position: relative;
         }
 
         .card-header {
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             margin-bottom: 20px; padding-bottom: 10px;
-            font-size: 0.75rem; letter-spacing: 1px; color: var(--neon-blue);
-            text-transform: uppercase;
+            font-size: 0.7rem; color: var(--neon-blue); text-transform: uppercase;
         }
 
         h1 { font-size: 1rem; font-weight: 400; line-height: 1.6; margin-bottom: 20px; }
 
-        .btn-container { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+        .btn-container { display: flex; flex-direction: column; gap: 12px; align-items: center; position: relative; z-index: 101; }
 
         button {
-            background: rgba(255, 255, 255, 0.1);
-            color: white; border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 10px 20px; border-radius: 30px; cursor: pointer;
-            width: 200px; transition: 0.3s; font-size: 0.85rem;
-            outline: none;
+            background: rgba(255, 255, 255, 0.12);
+            color: white; border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 12px 20px; border-radius: 30px; cursor: pointer;
+            width: 100%; max-width: 220px; transition: 0.3s; font-size: 0.9rem;
+            outline: none; position: relative; z-index: 102;
         }
 
-        button:hover { background: var(--white); color: black; transform: scale(1.05); }
+        button:active { background: var(--white); color: black; transform: scale(0.95); }
 
-        /* Maze Game Styles */
+        /* Game Labirin */
         #maze-container {
-            display: none;
-            position: relative;
-            width: 200px; height: 200px;
-            margin: 20px auto;
-            background: rgba(255,255,255,0.05);
-            border: 2px solid var(--neon-blue);
-            border-radius: 10px;
+            display: none; position: relative; width: 180px; height: 180px;
+            margin: 15px auto; background: rgba(0,0,0,0.4);
+            border: 2px solid var(--neon-blue); border-radius: 8px;
         }
 
         #player {
-            position: absolute; width: 15px; height: 15px;
+            position: absolute; width: 14px; height: 14px;
+            background: var(--neon-blue); border-radius: 50%;
+            top: 0; left: 0; box-shadow: 0 0 8px var(--neon-blue);
+        }
+
+        .target {
+            position: absolute; width: 14px; height: 14px;
+            background: #ff007f; border-radius: 50%; right: 5px; bottom: 5px;
+            box-shadow: 0 0 8px #ff007f;
+        }
+
+        .fade-in { animation: fadeIn 0.6s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div id="stars-container"></div>
+
+    <div class="silhouettes">
+        <img src="https://www.svgrepo.com/show/335165/muslim-man.svg" class="silhouette">
+        <img src="https://www.svgrepo.com/show/335168/muslim-woman.svg" class="silhouette" style="animation-delay: 2s;">
+    </div>
+
+    <audio id="bgMusic" loop preload="auto">
+        <source src="https://raw.githubusercontent.com/Arif-Eka/musik/main/melamarmu_instrumental.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="card" id="main-card">
+        <div class="card-header">
+            <span>TRANSMISI: ANSEN</span>
+            <span>v1.0</span>
+        </div>
+        
+        <div id="content" class="fade-in">
+            <h1>Halo Susi... <br>Bener ini dengan <b>Susi</b>?</h1>
+            <div class="btn-container">
+                <button onclick="startApp()">Iya, ini aku</button>
+                <button id="btn-no" onmouseover="moveButton(this)" onclick="moveButton(this)">Bukan Susi</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const audio = document.getElementById('bgMusic');
+        let posX = 0; let posY = 0;
+
+        function startApp() {
+            audio.play().catch(e => console.log("Audio play deferred"));
+            nextStep(2);
+        }
+
+        function nextStep(step) {
+            const content = document.getElementById('content');
+            content.classList.remove('fade-in');
+            void content.offsetWidth;
+            content.classList.add('fade-in');
+
+            if (step === 2) {
+                content.innerHTML = `
+                    <h1>Susi lahir pada tanggal <br><b>18 Oktober 2000</b> kan?</h1>
+                    <div class="btn-container">
+                        <button onclick="nextStep(3)">Iya, bener</button>
+                        <button onmouseover="moveButton(this)" onclick="moveButton(this)">Gak, salah</button>
+                    </div>
+                `;
+            } else if (step === 3) {
+                content.innerHTML = `
+                    <h1>Susi pasti <b>belum mandi</b> kan sekarang? Ngaku!</h1>
+                    <div class="btn-container">
+                        <button onclick="nextStep(4)">Kok tau? (Belum)</button>
+                        <button onclick="nextStep(4)">Udah wangi kok!</button>
+                    </div>
+                `;
+            } else if (step === 4) {
+                content.innerHTML = `
+                    <h1>Tes Kesabaran Ansen:<br>Gerakkan titik biru ke merah!</h1>
+                    <div id="maze-container"><div id="player"></div><div class="target"></div></div>
+                    <div class="btn-container" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; max-width: 180px;">
+                        <div></div><button style="width: 50px; padding: 10px;" onclick="movePlayer(0, -20)">↑</button><div></div>
+                        <button style="width: 50px; padding: 10px;" onclick="movePlayer(-20, 0)">←</button>
+                        <button style="width: 50px; padding: 10px;" onclick="movePlayer(0, 20)">↓</button>
+                        <button style="width: 50px; padding: 10px;" onclick="movePlayer(20, 0)">→</button>
+                    </div>
+                `;
+                document.getElementById('maze-container').style.display = 'block';
+            } else if (step === 5) {
+                content.innerHTML = `
+                    <h1 style="text-align: left; font-size: 0.9rem;">
+                        Susi... Di kantor mungkin aku cuma <b>"anak kecil"</b> buat kamu. Tapi asal kamu tau, perasaan anak kecil ini paling serius buat kamu. <br><br>
+                        Aku buat ini 2 hari ngga tidur. Karena Susi adalah tujuanku, dan aku ngga mau cari yang lain lagi.
+                    </h1>
+                    <button onclick="nextStep(6)">Lanjut...</button>
+                `;
+            } else if (step === 6) {
+                content.innerHTML = `
+                    <h1>Susi... <br>Mau nggak kita bangun semesta kita sendiri selamanya? <br><br><b>Will you marry me?</b></h1>
+                    <div class="btn-container">
+                        <button onclick="finalStep()">Iya, aku mau ❤️</button>
+                        <button id="btn-no" onmouseover="moveButton(this)" onclick="moveButton(this)">Enggak dulu</button>
+                    </div>
+                `;
+            }
+        }
+
+        function movePlayer(dx, dy) {
+            const player = document.getElementById('player');
+            posX = Math.min(Math.max(0, posX + dx), 160);
+            posY = Math.min(Math.max(0, posY + dy), 160);
+            player.style.left = posX + 'px';
+            player.style.top = posY + 'px';
+            if (posX >= 150 && posY >= 150) setTimeout(() => nextStep(5), 300);
+        }
+
+        function moveButton(btn) {
+            const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - btn.offsetHeight);
+            btn.style.position = 'fixed';
+            btn.style.left = x + 'px';
+            btn.style.top = y + 'px';
+        }
+
+        function finalStep() {
+            document.getElementById('content').innerHTML = `
+                <h1 style="color: var(--neon-blue); font-size: 1.3rem;">ALHAMDULILLAH ❤️</h1>
+                <p>Terima kasih sudah menghargai 2 malamku, Susi. Aku tunggu jawaban aslimu!</p>
+            `;
+        }
+
+        // Star Generator
+        const starsContainer = document.getElementById('stars-container');
+        for (let i = 0; i < 80; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 2 + 'px';
+            star.style.width = size; star.style.height = size;
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.opacity = Math.random();
+            star.style.animationDuration = (Math.random() * 5 + 3) + 's';
+            starsContainer.appendChild(star);
+        }
+    </script>
+</body>
+</html>
