@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transmisi Khusus Untuk Susi</title>
+    <style>
+        :root {
+            --bg-color: #0b0d17;
+            --glass-bg: rgba(255, 255, 255, 0.07);
+            --neon-blue: #00d2ff;
+            --white: #ffffff;
+        }
+
+        body, html {
+            margin: 0; padding: 0; height: 100%;
+            background-color: var(--bg-color);
+            color: var(--white);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        /* Star Background Animation */
+        #stars-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -3; background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
+        }
+
+        .star {
+            position: absolute; background: white; border-radius: 50%;
+            animation: moveStar linear infinite;
+        }
+
+        @keyframes moveStar {
+            from { transform: translateY(0); }
+            to { transform: translateY(100vh); }
+        }
+
+        /* Silhouettes */
+        .silhouettes {
+            position: fixed; bottom: 0; width: 100%;
+            display: flex; justify-content: space-around; align-items: flex-end;
+            z-index: -1; opacity: 0.15; pointer-events: none;
+        }
+
+        .silhouette {
+            height: 55vh; filter: brightness(0) invert(1);
+            animation: float 5s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Main Glass Card */
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+            z-index: 10;
+        }
+
+        .card-header {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px; padding-bottom: 10px;
+            font-size: 0.8rem; letter-spacing: 1px; color: var(--neon-blue);
+        }
+
+        h1 { font-size: 1.1rem; font-weight: 400; line-height: 1.6; margin-bottom: 25px; }
+
+        .btn-container { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+
+        button {
+            background: rgba(255, 255, 255, 0.1);
+            color: white; border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 25px; border-radius: 30px; cursor: pointer;
+            width: 220px; transition: 0.3s; font-size: 0.9rem;
+        }
+
+        button:hover { background: var(--white); color: black; transform: scale(1.05); }
+
+        /* Game Styles */
+        #game-area {
+            width: 100%; height: 150px; background: rgba(0,0,0,0.3);
+            border-radius: 10px; margin: 15px 0; position: relative; overflow: hidden;
+            display: none;
+        }
+
+        .game-star {
+            position: absolute; cursor: pointer; font-size: 20px;
+        }
+
+        .fade-in { animation: fadeIn 1s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div id="stars-container"></div>
+
+    <div class="silhouettes">
+        <img src="https://www.svgrepo.com/show/335165/muslim-man.svg" class="silhouette" alt="man">
+        <img src="https://www.svgrepo.com/show/335168/muslim-woman.svg" class="silhouette" style="animation-delay: 2s;" alt="woman">
+    </div>
+
+    <audio id="bgMusic" loop>
+        <source src="https://raw.githubusercontent.com/Arif-Eka/musik/main/melamarmu_instrumental.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="card" id="main-card">
+        <div class="card-header">
+            <span>TRANSMISI RAHASIA: ANSEN</span>
+            <span>✕</span>
+        </div>
+        
+        <div id="content" class="fade-in">
+            <h1>Halo... <br>Bener ini dengan <b>Susi</b>?</h1>
+            <div class="btn-container">
+                <button onclick="startApp()">Iya, ini aku</button>
+                <button id="btn-no" onmouseover="moveButton(this)">Bukan Susi</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const audio = document.getElementById('bgMusic');
+        let starCount = 0;
+
+        function startApp() {
+            audio.play().catch(e => console.log("Audio play deferred"));
+            nextStep(2);
+        }
+
+        function nextStep(step) {
+            const content = document.getElementById('content');
+            content.classList.remove('fade-in');
+            void content.offsetWidth;
+            content.classList.add('fade-in');
+
+            if (step === 2) {
+                content.innerHTML = `
+                    <h1>Oke Susi...<br>Berarti bener kamu yang lahir tanggal <b>18 Oktober 2000</b>?</h1>
+                    <div class="btn-container">
+                        <button onclick="nextStep(3)">Iya, bener</button>
+                        <button onmouseover="moveButton(this)">Enggak, salah</button>
+                    </div>
+                `;
+            } else if (step === 3) {
+                content.innerHTML = `
+                    <h1>Tebakanku sih...<br>Kamu <b>belum mandi</b> kan sekarang? Ngaku!</h1>
+                    <div class="btn-container">
+                        <button onclick="nextStep(4)">Kok tau? (Belum)</button>
+                        <button onclick="nextStep(4)">Udah wangi kok!</button>
+                    </div>
+                `;
+            } else if (step === 4) {
+                content.innerHTML = `
+                    <h1>Sebelum lanjut, Ansen punya bukti keseriusan. <br>Tangkap 5 bintang ini untukku:</h1>
+                    <div id="game-area"></div>
+                    <p id="score">Bintang: 0/5</p>
+                `;
+                document.getElementById('game-area').style.display = 'block';
+                spawnGameStar();
+            } else if (step === 5) {
+                content.innerHTML = `
+                    <h1 style="text-align: left; font-size: 0.9rem;">
+                        Pesan ini dari <b>"anak kecil"</b> yang ada di kantormu itu... <br><br>
+                        Jujur, aku udah coba buat jauhin kamu, tapi aku ngga bisa. Aku ngga tau apa yang aku rasain saat ini, tapi aku mau serius sama kamu. <br><br>
+                        "Anak kecil" ini yang buat semua kodingan ini sendirian. Dia sampai 2 hari ngga tidur cuma buat nyiapin ini buat kamu... 
+                        Dia udah janji bakal buat kamu bahagia lebih dari siapapun.
+                    </h1>
+                    <div class="btn-container">
+                        <button onclick="nextStep(6)">Lanjut...</button>
+                    </div>
+                `;
+            } else if (step === 6) {
+                content.innerHTML = `
+                    <h1>Susi... <br>Mau nggak kita bangun semesta kita sendiri selamanya? <br><br><b>Will you marry me?</b></h1>
+                    <div class="btn-container">
+                        <button onclick="finalStep()">Iya, aku mau</button>
+                        <button id="btn-no" onmouseover="moveButton(this)">Enggak dulu</button>
+                    </div>
+                `;
+            }
+        }
+
+        // Mini Game Logic
+        function spawnGameStar() {
+            const area = document.getElementById('game-area');
+            if (!area) return;
+            const star = document.createElement('div');
+            star.className = 'game-star';
+            star.innerHTML = '⭐';
+            star.style.left = Math.random() * 90 + '%';
+            star.style.top = Math.random() * 80 + '%';
+            
+            star.onclick = () => {
+                starCount++;
+                document.getElementById('score').innerText = `Bintang: ${starCount}/5`;
+                star.remove();
+                if (starCount < 5) {
+                    spawnGameStar();
+                } else {
+                    setTimeout(() => nextStep(5), 500);
+                }
+            };
+            area.appendChild(star);
+        }
+
+        // Move "No" Button
+        function moveButton(btn) {
+            const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - btn.offsetHeight);
+            btn.style.position = 'fixed';
+            btn.style.left = x + 'px';
+            btn.style.top = y + 'px';
+            btn.style.zIndex = '999';
+        }
+
+        function finalStep() {
+            document.getElementById('content').innerHTML = `
+                <h1 style="color: var(--neon-blue); font-size: 1.5rem;">Alhamdulillah. ❤️</h1>
+                <p>Transmisi diterima oleh Ansen.</p>
+                <p>Terima kasih sudah menghargai 2 malam tanpa tidurku. Aku tunggu kabar aslimu ya, Susi.</p>
+            `;
+        }
+
+        // Particle Stars Background
+        const starsContainer = document.getElementById('stars-container');
+        for (let i = 0; i < 150; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 3 + 'px';
+            star.style.width = size;
+            star.style.height = size;
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.opacity = Math.random();
+            star.style.animationDuration = (Math.random() * 5 + 3) + 's';
+            starsContainer.appendChild(star);
+        }
+    </script>
+</body>
+</html>
